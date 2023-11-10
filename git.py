@@ -1,14 +1,20 @@
 # app.py
 from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, PasswordField, EmailField, ValidationError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
 
 class RegistrationForm(FlaskForm):
+    email = EmailField('Email')
     username = StringField('Nome de Usuário')
+    password = PasswordField('Senha')
     submit = SubmitField('Cadastrar')
+
+    def validate_email(self, field):
+        if '@' not in field.data:
+            raise ValidationError('Por favor, insira um email válido.')
 
 @app.route('/', methods=['GET', 'POST'])
 def register():
